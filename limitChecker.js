@@ -1,3 +1,4 @@
+const url = require('url');
 const redis = require('redis');
 const redisClient = redis.createClient({
 	
@@ -5,15 +6,17 @@ const redisClient = redis.createClient({
 const moment = require('moment');
 
 module.exports = (req,res,next)=>{
-	redisClient.exists(req.headers.user , (err,reply)=>{
-		console.log('inside redisClient ... ' + req.headers.user + 'reply :: ' + reply);
+    let queryData = url.parse(req.url, true).query;
+	let clientID = queryData.clientID;
+	redisClient.exists(clientID , (err,reply)=>{
+		console.log('inside redisClient ... ' + clientID+ 'reply :: ' + reply);
 		if(err){
 			console.log('redis not working.....');
-			system.exit(0);
+			res.status(500).send('Please contact administrator');
 		}
 		
 		if(reply === 1){
-			redisClient.get(req.headers.user  , (err,reply)=>{
+			redisClient.get(clientID  , (err,reply)=>{
 				if(err){
 					console.log('error while getting user details');
 				}
@@ -25,16 +28,16 @@ module.exports = (req,res,next)=>{
 						'count' : 1,
 						'startTime' : moment().unix()
 					}
-					redisClient.set(req.headers.user , JSON.stringify(body));
+					redisClient.set(clientID , JSON.stringify(body));
 					next();
 				}
 				
 				if(difference <1){
-					if(data.count >3){
+					if(data.count >50){
 						return res.json({"error" :1 , "message" :  "Limit exhausted"});				 
 					}
 				    data.count++;
-					redisClient.set(req.headers.user,JSON.stringify(data));
+					redisClient.set(clientID,JSON.stringify(data));
 					next();
 				}
 			});
@@ -45,7 +48,7 @@ module.exports = (req,res,next)=>{
 			'count': 1,
 			'startTime': moment().unix()
 		  }
-		  redisClient.set(req.headers.user,JSON.stringify(body));
+		  redisClient.set(clientID,JSON.stringify(body));
 		  // allow request
 		  next()
         }

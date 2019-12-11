@@ -1,19 +1,21 @@
 {
-  "name": "Api_Rate_limiter",
+  "name": "api_rate_limiter",
   "version": "1.0.0",
-  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "vtiwari",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "moment": "^2.24.0",
+    "morgan": "^1.9.1",
     "redis": "^2.8.0",
     "request": "^2.88.0"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }

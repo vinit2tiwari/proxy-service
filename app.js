@@ -1,14 +1,14 @@
 const express = require('express');
 const app = express();
-const router = express.Router();
 const bodyParser = require('body-parser');
-app.use( express.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.text());
 
 const limitCheck = require('./limitChecker');
 const proxy = require('./proxy');
 
+//Middleware to chek limit consumption of api per user
 app.use(limitCheck);
+//Middleware to handle proxy request
 app.use(proxy);
-app.use('/api' , router);
 
 app.listen(3000);

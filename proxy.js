@@ -17,13 +17,14 @@ module.exports = (req,res,next)=>{
 		json : true,
 		rejectUnauthorized: false
 	};
-	console.log(JSON.stringify(options));
 	
+	console.log(JSON.stringify(options));
     if (queryData.url) {		
-		request(options, function (error, response, html) {
+		var http_request = request(options, function (error, response, html) {
 			if(error){
 				console.log('error occured while posting data :: ' + error);
-				return;
+				res.status(500).send(error);
+				next();
 			}
 			console.log('response from server :: ' + JSON.stringify(response));
 			if (response.statusCode == 200) {
@@ -31,6 +32,12 @@ module.exports = (req,res,next)=>{
 				next();
 			}
     	}).pipe(res);
+		
+		http_request.setTimeout(5000,  ()=>{
+			console.log('request timed out..');
+			res.status(504).send('It is taking more time than expected,Try again after some time');
+			next();
+		});
     }
     else {
         res.end("no url found");
