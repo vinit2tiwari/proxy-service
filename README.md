@@ -17,3 +17,6 @@ Steps to install and run on local environment:-
   2.run npm install
   
   3.run node app.js, server will start on 3000 port.
+  
+  Sample get request:-
+  https://api-rate-limiter-atdiv.run-us-west1.goorm.io/?url=https://postman-echo.com/get&clientID=u35435
